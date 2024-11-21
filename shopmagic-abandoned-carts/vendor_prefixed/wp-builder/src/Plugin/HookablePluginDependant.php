@@ -2,7 +2,7 @@
 
 namespace ShopMagicCartVendor\WPDesk\PluginBuilder\Plugin;
 
-interface HookablePluginDependant extends \ShopMagicCartVendor\WPDesk\PluginBuilder\Plugin\Hookable
+interface HookablePluginDependant extends Hookable
 {
     /**
      * Set Plugin.
@@ -11,7 +11,7 @@ interface HookablePluginDependant extends \ShopMagicCartVendor\WPDesk\PluginBuil
      *
      * @return null
      */
-    public function set_plugin(\ShopMagicCartVendor\WPDesk\PluginBuilder\Plugin\AbstractPlugin $plugin);
+    public function set_plugin(AbstractPlugin $plugin);
     /**
      * Get plugin.
      *

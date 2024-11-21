@@ -4,9 +4,9 @@ Tags: cart abandonment, cart recovery, abandoned carts, abandoned cart, abandone
 Author URL: https://shopmagic.app/products/shopmagic-abandoned-carts/?utm_source=wporg&utm_medium=readme&utm_campaign=shopmagic-abandoned-carts&utm_term=author-url&utm_content=add-on-abandoned-carts
 Donate link: https://shopmagic.app/
 Requires at least: 6.2
-Tested up to: 6.6
-Requires PHP: 7.3
-Stable tag: 2.2.22
+Tested up to: 6.7
+Requires PHP: 7.4
+Stable tag: 2.2.23
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -212,10 +212,14 @@ Not at all! No coding skills are required. One of our goals is to simplify the c
 5. Create abandonment cart email templates for specific languages.
 6. Run email marketing automation and sms notifications to recover abandoned carts in WooCommerce.
 7. Use custom filters to send emails and lower the abandonment cart rate in WooCommerce.
-8. Use custom email templates for the abandoned cart of your newsletter subscribers.
+8. Use custom email templates for the abandoned cart of your newsletter subscribers (with the [ShopMagic Manual Actions PRO add-on](https://shopmagic.app/products/shopmagic-manual-actions/)).
 9. Free add-ons for ShopMagic - a free email marketing plugin for WooCommerce.
 
 == Changelog ==
+
+= 2.2.23 - 2024-11-21 =
+* Added support for WordPress 6.7
+* Added support for WooCommerce 9.5
 
 = 2.2.22 - 2024-09-07 =
 * Added support for WooCommerce 9.3

@@ -7,7 +7,7 @@ use ShopMagicCartVendor\WPDesk\Plugin\Flow\Initialization\InitializationStrategy
 /**
  * Can decide if strategy is for free plugin or paid plugin
  */
-class SimpleFactory implements \ShopMagicCartVendor\WPDesk\Plugin\Flow\Initialization\InitializationFactory
+class SimpleFactory implements InitializationFactory
 {
     /** @var bool */
     private $free;
@@ -28,8 +28,8 @@ class SimpleFactory implements \ShopMagicCartVendor\WPDesk\Plugin\Flow\Initializ
     public function create_initialization_strategy(\ShopMagicCartVendor\WPDesk_Plugin_Info $info)
     {
         if ($this->free) {
-            return new \ShopMagicCartVendor\WPDesk\Plugin\Flow\Initialization\Simple\SimpleFreeStrategy($info);
+            return new SimpleFreeStrategy($info);
         }
-        return new \ShopMagicCartVendor\WPDesk\Plugin\Flow\Initialization\Simple\SimplePaidStrategy($info);
+        return new SimplePaidStrategy($info);
     }
 }

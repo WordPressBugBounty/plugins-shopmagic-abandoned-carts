@@ -20,10 +20,10 @@ echo \esc_attr($logo_url);
 ?>" /></span>
 		<p>
 			<?php 
-\printf(\esc_html__('Hey %s,', 'wpdesk-tracker'), \esc_html($username));
+\printf(\esc_html__('Hey %s,', 'shopmagic-abandoned-carts'), \esc_html($username));
 ?><br/>
 			<?php 
-\esc_html_e('Please help us improve our plugins! If you opt-in, we will collect some non-sensitive data and usage information anonymously. If you skip this, that\'s okay! All plugins will work just fine.', 'wpdesk-tracker');
+\esc_html_e('Please help us improve our plugins! If you opt-in, we will collect some non-sensitive data and usage information anonymously. If you skip this, that\'s okay! All plugins will work just fine.', 'shopmagic-abandoned-carts');
 ?>
 		</p>
 	</div>
@@ -32,19 +32,19 @@ echo \esc_attr($logo_url);
 		<a id="wpdesk_tracker_allow_button" href="<?php 
 echo \esc_url($allow_url);
 ?>" class="button button-primary button-allow button-large"><?php 
-\esc_html_e('Allow & Continue &rarr;', 'wpdesk-tracker');
+\esc_html_e('Allow & Continue &rarr;', 'shopmagic-abandoned-carts');
 ?></a>
 		<a href="<?php 
 echo \esc_url($skip_url);
 ?>" class="button button-secondary"><?php 
-\esc_html_e('Skip', 'wpdesk-tracker');
+\esc_html_e('Skip', 'shopmagic-abandoned-carts');
 ?></a>
 		<div class="clear"></div>
 	</div>
 
 	<div class="permissions">
 		<a class="trigger" href="#"><?php 
-\esc_html_e('What permissions are being granted?', 'wpdesk-tracker');
+\esc_html_e('What permissions are being granted?', 'shopmagic-abandoned-carts');
 ?></a>
 
 		<div class="permissions-details">
@@ -53,10 +53,10 @@ echo \esc_url($skip_url);
 					<i class="dashicons dashicons-admin-settings"></i>
 					<div>
 						<span><?php 
-\esc_html_e('Your Site Overview', 'wpdesk-tracker');
+\esc_html_e('Your Site Overview', 'shopmagic-abandoned-carts');
 ?></span>
 						<p><?php 
-\esc_html_e('WP version, PHP info', 'wpdesk-tracker');
+\esc_html_e('WP version, PHP info', 'shopmagic-abandoned-carts');
 ?></p>
 					</div>
 				</li>
@@ -64,10 +64,10 @@ echo \esc_url($skip_url);
 					<i class="dashicons dashicons-admin-plugins"></i>
 					<div>
 						<span><?php 
-\esc_html_e('Plugin Usage', 'wpdesk-tracker');
+\esc_html_e('Plugin Usage', 'shopmagic-abandoned-carts');
 ?></span>
 						<p><?php 
-\printf(\esc_html__('Current settings and usage information of %1$s plugins', 'wpdesk-tracker'), \esc_html($shop_name));
+\printf(\esc_html__('Current settings and usage information of %1$s plugins', 'shopmagic-abandoned-carts'), \esc_html($shop_name));
 ?></p>
 					</div>
 				</li>
@@ -75,10 +75,10 @@ echo \esc_url($skip_url);
 					<i class="dashicons dashicons-store"></i>
 					<div>
 						<span><?php 
-\esc_html_e('Your Store Overview', 'wpdesk-tracker');
+\esc_html_e('Your Store Overview', 'shopmagic-abandoned-carts');
 ?></span>
 						<p><?php 
-\esc_html_e('Anonymized and non-sensitive store usage information', 'wpdesk-tracker');
+\esc_html_e('Anonymized and non-sensitive store usage information', 'shopmagic-abandoned-carts');
 ?></p>
 					</div>
 				</li>
@@ -88,7 +88,7 @@ echo \esc_url($skip_url);
 				<a href="<?php 
 echo \esc_url_raw($terms_url);
 ?>" target="_blank"><?php 
-\esc_html_e('Find out more &raquo;', 'wpdesk-tracker');
+\esc_html_e('Find out more &raquo;', 'shopmagic-abandoned-carts');
 ?></a>
 			</div>
 		</div>

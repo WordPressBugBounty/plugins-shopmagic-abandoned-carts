@@ -10,7 +10,7 @@ use ShopMagicCartVendor\WPDesk\PluginBuilder\Plugin\SlimPlugin;
  * Initialize free plugin
  * - just build it already
  */
-class SimpleFreeStrategy implements \ShopMagicCartVendor\WPDesk\Plugin\Flow\Initialization\InitializationStrategy
+class SimpleFreeStrategy implements InitializationStrategy
 {
     use TrackerInstanceAsFilterTrait;
     use BuilderTrait;

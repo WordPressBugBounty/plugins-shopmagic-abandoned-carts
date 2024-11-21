@@ -1,19 +1,19 @@
 <?php return array(
     'root' => array(
-        'name' => 'wpdesk/shopmagic-cart',
-        'pretty_version' => '2.2.22',
-        'version' => '2.2.22.0',
-        'reference' => '9b4986e754c77116ad6e20305d0c1749f6d87f60',
+        'name' => 'wpdesk/shopmagic-abandoned-carts',
+        'pretty_version' => '2.2.23',
+        'version' => '2.2.23.0',
+        'reference' => 'f01adc4754d8c9c06a0bd23eacfe62be8a8c770c',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => false,
     ),
     'versions' => array(
-        'wpdesk/shopmagic-cart' => array(
-            'pretty_version' => '2.2.22',
-            'version' => '2.2.22.0',
-            'reference' => '9b4986e754c77116ad6e20305d0c1749f6d87f60',
+        'wpdesk/shopmagic-abandoned-carts' => array(
+            'pretty_version' => '2.2.23',
+            'version' => '2.2.23.0',
+            'reference' => 'f01adc4754d8c9c06a0bd23eacfe62be8a8c770c',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
