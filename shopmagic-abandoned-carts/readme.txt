@@ -6,7 +6,7 @@ Donate link: https://shopmagic.app/
 Requires at least: 6.2
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 2.2.23
+Stable tag: 2.2.24
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -216,6 +216,9 @@ Not at all! No coding skills are required. One of our goals is to simplify the c
 9. Free add-ons for ShopMagic - a free email marketing plugin for WooCommerce.
 
 == Changelog ==
+
+= 2.2.24 - 2024-12-21 =
+* Added support for WooCommerce 9.6
 
 = 2.2.23 - 2024-11-21 =
 * Added support for WordPress 6.7

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'wpdesk/shopmagic-abandoned-carts',
-        'pretty_version' => '2.2.23',
-        'version' => '2.2.23.0',
-        'reference' => 'f01adc4754d8c9c06a0bd23eacfe62be8a8c770c',
+        'pretty_version' => '2.2.24',
+        'version' => '2.2.24.0',
+        'reference' => 'bef9a56792d41fcdbc1aacc98aeacb6fb4a984f0',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'wpdesk/shopmagic-abandoned-carts' => array(
-            'pretty_version' => '2.2.23',
-            'version' => '2.2.23.0',
-            'reference' => 'f01adc4754d8c9c06a0bd23eacfe62be8a8c770c',
+            'pretty_version' => '2.2.24',
+            'version' => '2.2.24.0',
+            'reference' => 'bef9a56792d41fcdbc1aacc98aeacb6fb4a984f0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
