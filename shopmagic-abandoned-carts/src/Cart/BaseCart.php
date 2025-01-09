@@ -229,4 +229,8 @@ abstract class BaseCart implements Cart {
 	public function set_status( string $status ): void {
 		$this->status = $status;
 	}
+
+	public function set_token( string $token ): void {
+		$this->token = $token;
+	}
 }

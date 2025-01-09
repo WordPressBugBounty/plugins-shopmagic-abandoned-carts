@@ -63,8 +63,7 @@ final class CartInterceptor implements Hookable, Conditional {
 		$this->logger              = $logger;
 	}
 
-	/** @return void */
-	public function hooks() {
+	public function hooks(): void {
 		add_action( 'woocommerce_add_to_cart', [ $this, 'set_changed' ] );
 		add_action( 'woocommerce_applied_coupon', [ $this, 'set_changed' ] );
 		add_action( 'woocommerce_removed_coupon', [ $this, 'set_changed' ] );
@@ -81,214 +80,67 @@ final class CartInterceptor implements Hookable, Conditional {
 
 		add_action( 'shutdown', [ $this, 'save_cart' ] );
 
-		add_action( 'woocommerce_checkout_create_order', [ $this, 'sync_cart_with_order' ] );
+		add_action( 'woocommerce_checkout_order_processed', [ $this, 'sync_cart_with_order' ] );
+
+		// We are hooked to late to inject action in API checkout
+		// add_action( 'woocommerce_store_api_checkout_order_processed', [ $this, 'sync_cart_with_order' ] );
+
 		add_action(
 			'woocommerce_order_status_changed',
-			function ( $_, $__, $to, $order ) {
-				if ( in_array( $to, wc_get_is_paid_statuses(), true ) ) {
-					$this->mark_as_ordered( $order );
-				}
-			},
+			[ $this, 'mark_as_ordered' ],
 			10,
 			4
 		);
 	}
 
-	private function mark_as_ordered( \WC_Abstract_Order $order ): void {
-		$cart_id = $order->get_meta( 'shopmagic_cart_id' );
+	/** @internal */
+	public function save_cart(): void {
 		try {
-			$cart = $this->repository->find( $cart_id );
-		} catch ( CannotProvideItemException $e ) {
-			$this->logger->warning(
-				sprintf(
-					'Cart %d associated with order %d no longer exists.',
-					$cart_id,
-					$order->get_id()
-				)
-			);
-
-			return;
-		}
-
-		if ( ! $cart instanceof SubmittedCart && ! $cart instanceof AbandonedCart ) {
-			return;
-		}
-
-		$ordered_cart = OrderedCart::convert( $cart );
-		if ( $ordered_cart->is_recovered() ) {
-			$this->manager->save( $ordered_cart );
-		} else {
-			$this->manager->delete( $ordered_cart );
+			$this->do_save_cart();
+		} catch ( \Throwable $e ) {
+			$this->logger->critical( 'Impossible to save user cart!', [ 'exception' => $e->getMessage() ] );
 		}
 	}
 
-	/**
-	 * @return void
-	 * @internal
-	 */
-	public function set_changed_into_cookie() {
-		if ( ! headers_sent() ) {
-			WooCommerceCookies::set( self::COOKIE_IS_CHANGED_NAME, '1' );
-		}
-	}
-
-	/**
-	 * Important not to run this in the admin area, may not update cart properly
-	 *
-	 * @return void
-	 * @internal
-	 */
-	public function set_changed_from_cookie() {
-		if ( WooCommerceCookies::get( self::COOKIE_IS_CHANGED_NAME ) === '1' ) {
-			$this->is_changed = true;
-			WooCommerceCookies::clear( self::COOKIE_IS_CHANGED_NAME );
-		}
-	}
-
-	/**
-	 * @return void
-	 * @internal
-	 */
-	public function trigger_update_on_cart_and_checkout_pages() {
-		if (
-			defined( 'WOOCOMMERCE_CART' )
-			|| is_checkout()
-			|| did_action( 'woocommerce_before_checkout_form' ) // support for one-page checkout plugins.
-		) {
-			$this->is_changed = true;
-		}
-	}
-
-	/**
-	 * @return void
-	 * @internal
-	 */
-	public function sync_cart_with_order( \WC_Abstract_Order $order ) {
-		if ( ! $order instanceof WC_Order || ! WC()->session instanceof \WC_Session ) {
+	private function do_save_cart(): void {
+		if ( ! $this->should_save_cart() ) {
 			return;
 		}
 
-		try {
-			$cart = $this->repository->find_one_by_customer( $this->customer_repository->find_by_email( $order->get_billing_email() ) );
-		} catch ( ShopMagicException $e ) {
-			$this->logger->warning( 'Customer cart for order email not found. Trying to get cart from session data.' );
-			$cart = $this->get_cart();
-		}
-
-		if ( $cart->get_id() === null ) {
+		$cart = $this->get_cart();
+		if ( ! $cart instanceof ActiveCart ) {
+			$this->logger->notice( 'Found cart "{cid}" is no longer active. Ignoring.', [ 'cid' => $cart->get_id() ] );
 			return;
 		}
 
-		try {
-			$submitted_cart = SubmittedCart::convert( $cart );
-		} catch ( \InvalidArgumentException $e ) {
-			$this->logger->warning(
-				'An error occurred during converting cart {id} to submitted cart. Reason: {message}',
+		$this->store_tracking_key( $cart->get_token() );
+		$cart->sync( WC()->cart, $this->customer_provider->get_customer() );
+
+		if ( count( $cart->get_items() ) > 0 ) {
+			$saved = $this->manager->save( $cart );
+			$this->logger->info(
+				'Saved cart "{cid}" for {type}',
 				[
-					'id'      => $cart->get_id(),
-					'message' => $e->getMessage(),
+					'cid'     => $cart->get_id(),
+					'type'    => $cart->get_customer()->is_guest() ? 'guest' : 'user',
+					'email'    => $cart->get_customer()->get_email(),
+					'ua'    => self::get_user_agent(),
+					'success' => $saved,
 				]
 			);
 			return;
 		}
-		$submitted_cart->bind_with_order( $order );
 
-		$saved = $this->manager->save( $submitted_cart );
-		if ( $saved ) {
+		if ( $cart->get_id() !== null && $cart->get_status() === 'active' ) {
+			$deleted = $this->manager->delete( $cart );
 			$this->logger->info(
-				sprintf(
-					'Cart %d successfully saved after order. Cart status is %s',
-					$cart->get_id(),
-					$cart->get_status()
-				)
+				'Deleted empty cart "{cid}" for {type}',
+				[
+					'cid'     => $cart->get_id(),
+					'type'    => $cart->get_customer()->is_guest() ? 'guest' : 'user',
+					'success' => $deleted,
+				]
 			);
-		} else {
-			$this->logger->warning( sprintf( 'An error occurred during saving cart %d', $cart->get_id() ) );
-		}
-
-		$this->separate_cart_from_session();
-	}
-
-	private function get_cart(): Cart {
-		try {
-			return $this->repository->find_one_by( [ 'token' => $this->get_tracking_key() ] );
-		} catch ( CannotProvideItemException $e ) {
-			try {
-				return $this->repository->find_one_by_customer( $this->customer_provider->get_customer() );
-			} catch ( ShopMagicException $e ) {
-				$this->logger->debug( 'Cart was not associated with any tracking key nor customer. Creating new cart.' );
-
-				return $this->factory->create_null();
-			}
-		}
-	}
-
-	private function get_tracking_key(): string {
-		if ( WC()->session !== null ) {
-			$token = WC()->session->get( self::SESSION_TOKEN_KEY );
-			if ( is_string( $token ) && strlen( $token ) > 0 ) {
-				return $token;
-			}
-			$this->logger->debug( 'Cart token not found. Generating new session token.' );
-		}
-
-		return md5( uniqid( 'sm_', true ) );
-	}
-
-	/** @return void */
-	private function separate_cart_from_session() {
-		WC()->session->set( 'shopmagic_checkout_processed_time', time() );
-		WooCommerceCookies::clear( self::COOKIE_IS_CHANGED_NAME );
-		WC()->session->set( self::SESSION_TOKEN_KEY, '' );
-	}
-
-	/**
-	 * @return void
-	 * @internal
-	 */
-	public function save_cart() {
-		try {
-			if ( ! $this->should_save_cart() ) {
-				return;
-			}
-			$cart = $this->get_cart();
-			if ( ! $cart instanceof ActiveCart ) {
-				return;
-			}
-			$token = $cart->get_token() ?: $this->get_tracking_key();
-			$this->store_tracking_key( $token );
-			$cart->sync( WC()->cart, $this->customer_provider->get_customer(), $token );
-
-			if ( count( $cart->get_items() ) !== 0 ) {
-				$saved = $this->manager->save( $cart );
-				if ( $saved ) {
-					$this->logger->info(
-						sprintf(
-							'Saved cart with ID %d for %s %s',
-							$cart->get_id(),
-							$cart->get_customer()->is_guest() ? 'guest' : 'user',
-							$cart->get_customer()->get_email()
-						)
-					);
-				} else {
-					$this->logger->warning( sprintf( 'An error occurred during saving cart %d', $cart->get_id() ) );
-				}
-			} elseif ( $cart->get_id() !== null && $cart->get_status() === 'active' ) {
-				$deleted = $this->manager->delete( $cart );
-				if ( $deleted ) {
-					$this->logger->info(
-						sprintf(
-							'Deleted cart with ID %d for user %s',
-							$cart->get_id(),
-							$cart->get_customer()->get_email()
-						)
-					);
-				} else {
-					$this->logger->warning( sprintf( 'Cart %d could not be deleted.', $cart->get_id() ) );
-				}
-			}
-		} catch ( \Throwable $e ) {
-			$this->logger->error( 'Cannot CartInterceptor::save_cart', [ 'exception' => $e ] );
 		}
 	}
 
@@ -309,37 +161,291 @@ final class CartInterceptor implements Hookable, Conditional {
 			return false;
 		}
 
-		// session only loaded on front end.
-		if ( WC()->session ) {
-			$last_checkout = WC()->session->get( 'shopmagic_checkout_processed_time' );
-			$this->logger->debug( 'Last checkout intercepted at ' . date( 'Y-m-d H:i:s', (int) $last_checkout ) );
+		if ( ! WC()->session ) {
+			return false;
+		}
 
-			// ensure checkout has not been processed in the last 5 minutes
-			// this is a fallback for a rare case when the cart session is not cleared after checkout.
-			if ( $last_checkout && $last_checkout > ( time() - 5 * MINUTE_IN_SECONDS ) ) {
-				$this->logger->debug( 'Skipping cart save.' );
+		// ensure checkout has not been processed in the last 5 minutes
+		// this is a fallback for a rare case when the cart session is not cleared after checkout.
+		$last_checkout = WC()->session->get( 'shopmagic_checkout_processed_time' );
+		if ( $last_checkout && $last_checkout > ( time() - 5 * MINUTE_IN_SECONDS ) ) {
+			$this->logger->debug(
+				'Skip saving a cart. It was recently purchased.',
+				[
+					'purchased_at' => date( 'Y-m-d H:i:s', (int) $last_checkout ),
+					'ua'           => self::get_user_agent(),
+				]
+			);
 
-				return false;
-			}
+			return false;
 		}
 
 		return true;
 	}
 
-	/** @return void */
-	private function store_tracking_key( string $token ) {
-		if ( ! WC()->session ) {
-			return;
-		}
-		WC()->session->set( self::SESSION_TOKEN_KEY, $token );
-	}
-
 	/**
+	 * @param \WC_Order|int $order
 	 * @return void
 	 * @internal
 	 */
-	public function set_changed() {
+	public function sync_cart_with_order( $order ) {
+		if ( ! WC()->session instanceof \WC_Session ) {
+			$this->logger->error( 'Cart-order synchronization performed without session context!', [ 'order' => gettype( $order ) ] );
+			return;
+		}
+
+		if ( is_int( $order ) ) {
+			$order = wc_get_order( $order );
+		}
+
+		if ( ! $order instanceof WC_Order ) {
+			$this->logger->error(
+				'Impossible to sync cart with order! Invalid order type.',
+				[ 'order' => gettype( $order ) ]
+			);
+			return;
+		}
+
+		$this->logger->debug(
+			'Syncing cart with order {oid}...',
+			[
+				'oid' => $order->get_id(),
+				'ua'  => self::get_user_agent(),
+			]
+		);
+
+		try {
+			$cart = $this->repository->find_one_by_customer( $this->customer_repository->find_by_email( $order->get_billing_email() ) );
+			$this->logger->debug(
+				'Found previous user cart by user email.',
+				[
+					'oid' => $order->get_id(),
+					'cid' => $cart->get_id(),
+				]
+			);
+		} catch ( ShopMagicException $e ) {
+			$this->logger->warning(
+				'Customer cart for order email not found. Trying to get cart from session data...',
+				[
+					'order_id'       => $order->get_id(),
+					'customer_email' => $order->get_billing_email(),
+					'exception'      => $e->getMessage(),
+				]
+			);
+
+			$cart = $this->get_cart();
+		}
+
+		if ( $cart->get_id() === null ) {
+			$this->logger->error( 'No existing cart found for order {oid}!', [ 'oid' => $order->get_id() ] );
+			return;
+		}
+
+		try {
+			$submitted_cart = SubmittedCart::convert( $cart );
+		} catch ( \InvalidArgumentException $e ) {
+			$this->logger->error(
+				'An error occurred during converting cart {cid} to submitted cart. Reason: {message}',
+				[
+					'cid'         => $cart->get_id(),
+					'oid'         => $order->get_id(),
+					'message'     => $e->getMessage(),
+					'cart_status' => $cart->get_status(),
+				]
+			);
+			return;
+		}
+		$submitted_cart->bind_with_order( $order );
+		$order->save();
+
+		$saved = $this->manager->save( $submitted_cart );
+		if ( $saved ) {
+			$this->logger->info(
+				'Cart "{cid}" successfully saved after order. Cart status is "{status}"',
+				[
+					'cid'    => $submitted_cart->get_id(),
+					'status' => $submitted_cart->get_status(),
+				]
+			);
+		} else {
+			$this->logger->warning( 'An error occurred during saving cart "{cid}"', [ 'cid' => $submitted_cart->get_id() ] );
+		}
+
+		$this->separate_cart_from_session();
+	}
+
+	private function get_cart(): Cart {
+		$token = $this->get_tracking_key();
+
+		$this->logger->debug( 'Attempting to find cart by token...' );
+
+		try {
+			$cart = $this->repository->find_one_by( [ 'token' => $token ] );
+			$this->logger->debug(
+				'Found cart "{cid}" with token',
+				[
+					'cid'   => $cart->get_id(),
+					'token' => $token,
+				]
+			);
+
+			return $cart;
+		} catch ( CannotProvideItemException $e ) {
+			$this->logger->debug( 'Could not find cart by token. Attempting to find cart by session-provided customer...', [ 'token' => $token ] );
+		}
+
+		try {
+			$cart = $this->repository->find_one_by_customer( $this->customer_provider->get_customer() );
+			$this->logger->debug( 'Found cart "{cid}" by session-provided customer', [ 'cid' => $cart->get_id() ] );
+
+			// Refresh token.
+			if ( empty( $cart->get_token() ) ) {
+				$cart->set_token( $token );
+			}
+
+			return $cart;
+		} catch ( ShopMagicException $e ) {
+			// Fallthrough to new cart.
+		}
+
+		$this->logger->debug( 'No cart found. Returning a new cart.' );
+		return $this->factory->with_token( $token );
+	}
+
+	/** @param \WC_Order $order */
+	public function mark_as_ordered( $id, $from, $to, $order ): void {
+		if ( ! $order instanceof WC_Order ) {
+			return;
+		}
+
+		if ( ! $order->is_paid() ) {
+			return;
+		}
+
+		$cart_id = $order->get_meta( 'shopmagic_cart_id' );
+
+		if ( is_numeric( $cart_id ) ) {
+			$cart_finder = fn () => $this->repository->find( $cart_id );
+		} else {
+			$cart_finder = fn () => $this->repository->find_one_by_customer( $this->customer_repository->find_by_email( $order->get_billing_email() ) );
+		}
+
+		try {
+			$cart = $cart_finder();
+		} catch ( CannotProvideItemException $e ) {
+			$this->logger->error(
+				'Failed to associate any cart with order "{oid}"!',
+				[
+					'oid'       => $order->get_id(),
+					'exception' => $e->getMessage(),
+				]
+			);
+			return;
+		}
+
+		$this->logger->debug(
+			'Attempting to mark potential cart as ordered for order {oid}...',
+			[ 'oid' => $order->get_id() ]
+		);
+
+		if ( ! $cart instanceof SubmittedCart && ! $cart instanceof AbandonedCart ) {
+			$this->logger->error(
+				'Invalid cart type for order association. Expected status "submitted" or "abandoned".',
+				[
+					'cid'         => $cart_id,
+					'oid'         => $order->get_id(),
+					'cart_status' => $cart->get_status(),
+				]
+			);
+			return;
+		}
+
+		$ordered_cart = OrderedCart::convert( $cart );
+		$this->logger->info(
+			'Converting cart "{cid}" for order "{oid}" to ordered status',
+			[
+				'cid'             => $cart->get_id(),
+				'oid'             => $order->get_id(),
+				'is_recovered'    => $ordered_cart->is_recovered(),
+				'original_status' => $cart->get_status(),
+				'new_status'      => $ordered_cart->get_status(),
+			]
+		);
+
+		if ( $ordered_cart->is_recovered() ) {
+			$saved = $this->manager->save( $ordered_cart );
+			$this->logger->info(
+				'Cart "{cid}" saved as recovered',
+				[
+					'cid'     => $ordered_cart->get_id(),
+					'success' => $saved,
+				]
+			);
+		} else {
+			$deleted = $this->manager->delete( $ordered_cart );
+			$this->logger->info(
+				'Cart "{cid}" deleted after purchase within allowed timeframe.',
+				[
+					'cid'     => $ordered_cart->get_id(),
+					'success' => $deleted,
+				]
+			);
+		}
+	}
+
+	/** @internal */
+	public function set_changed_into_cookie(): void {
+		if ( ! headers_sent() ) {
+			WooCommerceCookies::set( self::COOKIE_IS_CHANGED_NAME, '1' );
+		}
+	}
+
+	/**
+	 * Important not to run this in the admin area, may not update cart properly
+	 *
+	 * @internal
+	 */
+	public function set_changed_from_cookie(): void {
+		if ( WooCommerceCookies::get( self::COOKIE_IS_CHANGED_NAME ) === '1' ) {
+			$this->is_changed = true;
+			WooCommerceCookies::clear( self::COOKIE_IS_CHANGED_NAME );
+		}
+	}
+
+	/** @internal */
+	public function trigger_update_on_cart_and_checkout_pages(): void {
+		if (
+			defined( 'WOOCOMMERCE_CART' )
+				|| is_checkout()
+				|| did_action( 'woocommerce_before_checkout_form' ) // support for one-page checkout plugins.
+		) {
+			$this->is_changed = true;
+		}
+	}
+
+
+	/** @internal */
+	public function set_changed(): void {
 		$this->is_changed = true;
+	}
+
+	private function store_tracking_key( string $token ): void {
+		WC()->session->set( self::SESSION_TOKEN_KEY, $token );
+	}
+
+	private function get_tracking_key(): string {
+		$token = WC()->session->get( self::SESSION_TOKEN_KEY );
+		if ( is_string( $token ) && strlen( $token ) > 0 ) {
+			return $token;
+		}
+
+		return md5( uniqid( 'sm_', true ) );
+	}
+
+	private function separate_cart_from_session(): void {
+		WC()->session->set( 'shopmagic_checkout_processed_time', time() );
+		WooCommerceCookies::clear( self::COOKIE_IS_CHANGED_NAME );
+		WC()->session->set( self::SESSION_TOKEN_KEY, '' );
 	}
 
 	public static function is_needed(): bool {
@@ -348,5 +454,9 @@ final class CartInterceptor implements Hookable, Conditional {
 		}
 
 		return true;
+	}
+
+	private static function get_user_agent(): string {
+		return sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) ?: 'unknown';
 	}
 }

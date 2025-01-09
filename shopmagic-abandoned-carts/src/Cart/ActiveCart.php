@@ -46,16 +46,13 @@ class ActiveCart extends BaseCart {
 	/**
 	 * Updates the stored cart with the current time and cart items
 	 *
+	 * @param string $token Deprecated.
 	 * @return void
 	 */
-	public function sync( \WC_Cart $wc_cart, Customer $customer, string $token ) {
+	public function sync( \WC_Cart $wc_cart, Customer $customer, string $token = '' ) {
 		$this->last_modified = new \DateTimeImmutable();
 
-		if ( $this->needs_update( $token ) ) {
-			$this->changed = true;
-		}
-
-		$this->items = $this->map_array_items( WC()->cart->get_cart_for_session() );
+		$this->items = $this->map_array_items( $wc_cart->get_cart_for_session() );
 
 		$coupon_data = [];
 		foreach ( $wc_cart->get_applied_coupons() as $coupon_code ) {
@@ -67,7 +64,6 @@ class ActiveCart extends BaseCart {
 		}
 
 		$this->coupons            = $coupon_data;
-		$this->token              = $token;
 		$this->fees               = $wc_cart->get_fees();
 		$this->currency           = get_woocommerce_currency();
 		$this->customer           = $customer;
@@ -79,14 +75,6 @@ class ActiveCart extends BaseCart {
 		if ( $this->status === Cart::FRESH ) {
 			$this->status = Cart::ACTIVE;
 		}
-	}
-
-	private function needs_update( string $token ): bool {
-		$created = $this->created->format( WordPressFormatHelper::MYSQL_DATETIME_FORMAT );
-		$updated = $this->last_modified->format( WordPressFormatHelper::MYSQL_DATETIME_FORMAT );
-
-		return ( $created !== $updated ) ||
-			   ( $this->token !== $token );
 	}
 
 	/** @return void */
@@ -117,6 +105,4 @@ class ActiveCart extends BaseCart {
 		$this->total                += $this->shipping_total;
 		$this->total                += $this->shipping_tax_total;
 	}
-
-
 }

@@ -26,7 +26,7 @@ final class CartFactory {
 
 	public function __construct( CustomerRepository $customer_repository, LoggerInterface $logger = null ) {
 		$this->customer_repository = $customer_repository;
-		$this->logger = $logger ?? new NullLogger();
+		$this->logger              = $logger ?? new NullLogger();
 	}
 
 	public function create_item( array $data ): object {
@@ -49,7 +49,7 @@ final class CartFactory {
 			$cart_class = OrderedCart::class;
 		} else {
 			$cart_class = NullCart::class;
-			$this->logger->error(sprintf('Could not create cart for status: %s', $status));
+			$this->logger->error( sprintf( 'Could not create cart for status: %s', $status ) );
 		}
 
 		$cart = new $cart_class(
@@ -71,6 +71,7 @@ final class CartFactory {
 		return apply_filters( 'shopmagic/carts/create_cart', $cart );
 	}
 
+	#[\Deprecated( 'Use CartFactory::with_token to create a fresh cart.' )]
 	public function create_null() {
 		return apply_filters(
 			'shopmagic/carts/create_cart',
@@ -87,6 +88,27 @@ final class CartFactory {
 				0,
 				0,
 				'',
+				get_woocommerce_currency()
+			)
+		);
+	}
+
+	public function with_token( string $token ): ActiveCart {
+		return apply_filters(
+			'shopmagic/carts/create_cart',
+			new ActiveCart(
+				null,
+				Cart::FRESH,
+				new NullCustomer(),
+				new \DateTimeImmutable(),
+				new \DateTimeImmutable(),
+				[],
+				[],
+				[],
+				0,
+				0,
+				0,
+				$token,
 				get_woocommerce_currency()
 			)
 		);
