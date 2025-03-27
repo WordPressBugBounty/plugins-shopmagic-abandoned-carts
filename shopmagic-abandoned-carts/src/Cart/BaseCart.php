@@ -187,11 +187,11 @@ abstract class BaseCart implements Cart {
 	}
 
 	public function get_calculated_tax_total(): int {
-		return $this->calculated_tax_total;
+		return (int) $this->calculated_tax_total;
 	}
 
 	public function get_calculated_subtotal(): int {
-		return $this->calculated_subtotal;
+		return (int) $this->calculated_subtotal;
 	}
 
 	public function normalize(): array {

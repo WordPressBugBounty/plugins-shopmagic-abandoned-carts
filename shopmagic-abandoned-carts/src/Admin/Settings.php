@@ -27,7 +27,6 @@ final class Settings extends FieldSettingsTab {
 		return esc_html__( 'Abandoned Carts', 'shopmagic-abandoned-carts' );
 	}
 
-	/** @return \ShopMagicVendor\WPDesk\Forms\Field[] */
 	public function get_fields(): array {
 		return [
 			( new InputNumberField() )
@@ -39,13 +38,21 @@ final class Settings extends FieldSettingsTab {
 			( new CheckboxField() )
 				->set_name( self::EXPIRATION )
 				->set_label( esc_html__( 'Enable Carts clear', 'shopmagic-abandoned-carts' ) )
-				->set_description( esc_html__( 'Automatically clear Carts tab after 30 days. This option will affect cart statistics, at they will be available for the last 30 days only.',
-					'shopmagic-abandoned-carts' ) ),
+				->set_description(
+					esc_html__(
+						'Automatically clear Carts tab after 30 days. This option will affect cart statistics, at they will be available for the last 30 days only.',
+						'shopmagic-abandoned-carts'
+					)
+				),
 			( new CheckboxField() )
 				->set_name( self::ENABLE_EXIT_POPUP )
 				->set_label( esc_html__( 'Enable Exit Intent Popup', 'shopmagic-abandoned-carts' ) )
-				->set_description( esc_html__( 'Show your customers a popup message right before they leave your store to save more recoverable abandoned carts.',
-					'shopmagic-abandoned-carts' ) ),
+				->set_description(
+					esc_html__(
+						'Show your customers a popup message right before they leave your store to save more recoverable abandoned carts.',
+						'shopmagic-abandoned-carts'
+					)
+				),
 			( new InputTextField() )
 				->set_name( self::EXIT_POPUP_TITLE )
 				->set_placeholder( self::title_default() )
@@ -57,8 +64,12 @@ final class Settings extends FieldSettingsTab {
 			( new CheckboxField() )
 				->set_name( self::ENABLE_EXIT_POPUP_TEST )
 				->set_label( esc_html__( 'Enable popup test mode', 'shopmagic-abandoned-carts' ) )
-				->set_description( esc_html__( 'Test mode allows you to see popup on cart page when you are logged in.',
-					'shopmagic-abandoned-carts' ) ),
+				->set_description(
+					esc_html__(
+						'Test mode allows you to see popup on cart page when you are logged in.',
+						'shopmagic-abandoned-carts'
+					)
+				),
 		];
 	}
 
@@ -67,7 +78,9 @@ final class Settings extends FieldSettingsTab {
 	}
 
 	public static function content_default(): string {
-		return esc_html__( 'Just leave your email address and we will make sure it gets to safety and is not forgotten!',
-			'shopmagic-abandoned-carts' );
+		return esc_html__(
+			'Just leave your email address and we will make sure it gets to safety and is not forgotten!',
+			'shopmagic-abandoned-carts'
+		);
 	}
 }

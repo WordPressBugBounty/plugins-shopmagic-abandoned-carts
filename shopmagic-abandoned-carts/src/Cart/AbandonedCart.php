@@ -26,7 +26,7 @@ class AbandonedCart extends BaseCart {
 		string $currency
 	) {
 		if ( $status !== Cart::ACTIVE &&
-			 $status !== Cart::ABANDONED
+			$status !== Cart::ABANDONED
 		) {
 			throw new \InvalidArgumentException( sprintf( 'Allowed statuses are: "active", "abandoned"; "%s" given.', $status ) );
 		}

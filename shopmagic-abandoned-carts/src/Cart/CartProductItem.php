@@ -63,7 +63,7 @@ final class CartProductItem implements \JsonSerializable {
 
 	public function get_image_src(): string {
 		try {
-			return wp_get_attachment_image_url( $this->get_product()->get_image_id(), [ 40, 40 ] ) ?: '';
+			return wp_get_attachment_image_url( (int) $this->get_product()->get_image_id(), [ 40, 40 ] ) ?: '';
 		} catch ( ReferenceNoLongerAvailableException $e ) {
 			return wc_placeholder_img_src();
 		}
@@ -80,7 +80,7 @@ final class CartProductItem implements \JsonSerializable {
 	}
 
 	private function get_key(): string {
-		return (string) $this->data['key'] ?? '';
+		return (string) ( $this->data['key'] ?? '' );
 	}
 
 	/** @retrun void */

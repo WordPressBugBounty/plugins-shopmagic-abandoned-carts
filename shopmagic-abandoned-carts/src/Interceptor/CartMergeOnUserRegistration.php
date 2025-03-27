@@ -52,37 +52,74 @@ final class CartMergeOnUserRegistration implements Hookable {
 			return;
 		}
 
-		$this->logger->debug('Trying to transfer an active cart "{cart}" to newly registered user...', ['cart' => $guest_cart->get_id(), 'guest' => $guest->get_id()]);
+		$this->logger->debug(
+			'Trying to transfer an active cart "{cart}" to newly registered user...',
+			[
+				'cart'  => $guest_cart->get_id(),
+				'guest' => $guest->get_id(),
+			]
+		);
 		$user_customer     = new UserAsCustomer( $user );
 		$delete_guest_cart = false;
 
-		$this->logger->debug('Seraching for an active cart already assigned to registered user...', ['user' => $user_customer->get_id()]);
+		$this->logger->debug( 'Seraching for an active cart already assigned to registered user...', [ 'user' => $user_customer->get_id() ] );
 		try {
 			$user_cart = $this->repository->find_one_by_customer( $user_customer );
-			$this->logger->debug('Found another active cart assigned to registered user.', ['cart' => $user_cart->get_id(), 'user' => $user_customer->get_id()]);
+			$this->logger->debug(
+				'Found another active cart assigned to registered user.',
+				[
+					'cart' => $user_cart->get_id(),
+					'user' => $user_customer->get_id(),
+				]
+			);
 
 			if ( $user_cart->get_last_modified() > $guest_cart->get_last_modified() ) {
-				$this->logger->debug('User cart is newer. Marking guest cart for deletion.', ['cart' => $user_cart->get_id(), 'user' => $user_customer->get_id()]);
+				$this->logger->debug(
+					'User cart is newer. Marking guest cart for deletion.',
+					[
+						'cart' => $user_cart->get_id(),
+						'user' => $user_customer->get_id(),
+					]
+				);
 				$delete_guest_cart = true;
 			} else {
 				$this->manager->delete( $user_cart );
-				$this->logger->debug('Deleted user cart.', ['cart' => $user_cart->get_id(), 'user' => $user_customer->get_id()]);
+				$this->logger->debug(
+					'Deleted user cart.',
+					[
+						'cart' => $user_cart->get_id(),
+						'user' => $user_customer->get_id(),
+					]
+				);
 			}
 		} catch ( EntityNotFound $e ) {
 			// no user cart means we only need to update guest cart.
-			$this->logger->debug('No user cart found. Only updating guest cart.', ['user' => $user_customer->get_id()]);
+			$this->logger->debug( 'No user cart found. Only updating guest cart.', [ 'user' => $user_customer->get_id() ] );
 		}
 
 		if ( $delete_guest_cart === true ) {
 			$this->manager->delete( $guest_cart );
-			$this->logger->debug('Deleted guest cart.', ['cart' => $guest_cart->get_id(), 'guest' => $guest->get_id()]);
+			$this->logger->debug(
+				'Deleted guest cart.',
+				[
+					'cart'  => $guest_cart->get_id(),
+					'guest' => $guest->get_id(),
+				]
+			);
 		} else {
 			$guest_cart->set_customer( $user_customer );
 
 			$this->manager->save( $guest_cart );
-			$this->logger->debug('Upgraded guest cart to user cart with registered customer.', ['cart' => $guest_cart->get_id(), 'guest' => $guest->get_id(), 'user' => $user_customer->get_id()]);
+			$this->logger->debug(
+				'Upgraded guest cart to user cart with registered customer.',
+				[
+					'cart'                   => $guest_cart->get_id(),
+					'guest'                  => $guest->get_id(),
+					'user'                   => $user_customer->get_id(),
+				]
+			);
 		}
 
-		$this->logger->debug('Finished active cart transfer.');
+		$this->logger->debug( 'Finished active cart transfer.' );
 	}
 }

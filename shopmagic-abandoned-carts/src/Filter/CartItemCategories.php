@@ -12,7 +12,7 @@ final class CartItemCategories extends CartBasedFilter {
 	}
 
 	public function get_description(): string {
-		return esc_html__('Run automation if products in cart matches the rule.', 'shopmagic-abandoned-carts');
+		return esc_html__( 'Run automation if products in cart matches the rule.', 'shopmagic-abandoned-carts' );
 	}
 
 	public function passed(): bool {
@@ -20,6 +20,7 @@ final class CartItemCategories extends CartBasedFilter {
 		foreach ( $this->get_cart()->get_items() as $item ) {
 			$terms[] = wp_get_object_terms( $item->get_product_id(), 'product_cat', [ 'fields' => 'ids' ] );
 		}
+		// @phpstan-ignore arrayFilter.strict
 		$category_ids = array_filter( array_merge( ...$terms ) );
 
 		return $this->get_type()->passed(
@@ -34,12 +35,12 @@ final class CartItemCategories extends CartBasedFilter {
 	}
 
 	/**
-	 * @return array<string, string>
+	 * @return array<int, string>
 	 */
 	private function get_categories(): array {
 		$list = [];
 
-		$categories = get_terms(
+		$categories = get_terms( // phpcs:ignore WordPress.WP.DeprecatedParameters.Get_termsParam2Found
 			'product_cat',
 			[
 				'orderby'    => 'name',

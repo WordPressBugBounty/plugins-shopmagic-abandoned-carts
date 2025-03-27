@@ -28,20 +28,23 @@ class CartRepository extends ObjectRepository {
 		}
 
 		/** @var BaseCart */
-		return $this->find_one_by( array_merge(
-			$where, [
+		return $this->find_one_by(
+			array_merge(
+				$where,
 				[
-					'field'     => 'status',
-					'condition' => '<>',
-					'value'     => Cart::ORDERED,
-				],
-				[
-					'field'     => 'status',
-					'condition' => '<>',
-					'value'     => Cart::RECOVERED,
-				],
-			]
-		) );
+					[
+						'field'     => 'status',
+						'condition' => '<>',
+						'value'     => Cart::ORDERED,
+					],
+					[
+						'field'     => 'status',
+						'condition' => '<>',
+						'value'     => Cart::RECOVERED,
+					],
+				]
+			)
+		);
 	}
 
 	protected function get_name(): string {

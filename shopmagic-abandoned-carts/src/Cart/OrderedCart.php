@@ -63,5 +63,4 @@ class OrderedCart extends BaseCart {
 	public function is_recovered(): bool {
 		return $this->status === Cart::RECOVERED;
 	}
-
 }

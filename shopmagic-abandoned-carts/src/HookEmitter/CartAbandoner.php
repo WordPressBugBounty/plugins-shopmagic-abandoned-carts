@@ -32,7 +32,7 @@ final class CartAbandoner implements Hookable, LoggerAwareInterface {
 
 	public function __construct( CartRepository $repository, CartManager $manager, LoggerInterface $logger ) {
 		$this->repository   = $repository;
-		$this->manager   = $manager;
+		$this->manager      = $manager;
 		$this->abandon_when = max( (int) Settings::get_option( Settings::TIMEOUT, Settings::TIMEOUT_DEFAULT ), Settings::TIMEOUT_DEFAULT );
 		$this->logger       = $logger;
 	}

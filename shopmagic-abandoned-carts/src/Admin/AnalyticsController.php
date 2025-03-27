@@ -14,27 +14,34 @@ class AnalyticsController {
 		global $wpdb;
 		$date_iterator = new DateIterator();
 		$table         = DatabaseTable::cart();
-		$carts         = $wpdb->get_results( "
+		$carts         = $wpdb->get_results(
+			$wpdb->prepare(
+				'
 			SELECT
 				count(*) as count,
 				DATE(last_modified) as date
-			FROM $table
+			FROM %i
 			GROUP BY last_modified
-		",
-			ARRAY_A );
+		',
+				$table
+			),
+			ARRAY_A
+		);
 
 		$stats = array_fill_keys( $date_iterator->get_date_labels(), 0 );
 
 		foreach ( $carts as $cart ) {
 			if ( isset( $stats[ $cart['date'] ] ) ) {
-				$stats[ $cart['date']] = (int) $cart['count'];
+				$stats[ $cart['date'] ] = (int) $cart['count'];
 			}
 		}
 
-		return new \WP_REST_Response( [
-			'labels' => array_keys( $stats ),
-			'plot'   => array_values( $stats ),
-		] );
+		return new \WP_REST_Response(
+			[
+				'labels' => array_keys( $stats ),
+				'plot'   => array_values( $stats ),
+			]
+		);
 	}
 
 	public function top_statistics( CartStatistics $statistics ): \WP_REST_Response {
@@ -42,8 +49,10 @@ class AnalyticsController {
 		$recovered_count = $statistics->get_recovered_carts_count();
 		$recovery_rate   = ( $order_count + $recovered_count === 0 )
 			? 0
-			: round( $recovered_count / ( $order_count + $recovered_count ) * 100,
-				2 );
+			: round(
+				$recovered_count / ( $order_count + $recovered_count ) * 100,
+				2
+			);
 
 		$stats_values = [
 			[
@@ -70,5 +79,4 @@ class AnalyticsController {
 
 		return new \WP_REST_Response( [ 'top_stats' => $stats_values ] );
 	}
-
 }

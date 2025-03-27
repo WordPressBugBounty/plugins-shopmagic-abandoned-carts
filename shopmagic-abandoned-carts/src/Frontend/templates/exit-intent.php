@@ -97,12 +97,12 @@
 		<input name="nonce" type="hidden" value="<?php echo esc_attr( $nonce ); ?>">
 		<label class="sr-only" for="sm-exit-email"><?php esc_html_e( 'Enter your email', 'shopmagic-abandoned-carts' ); ?></label>
 		<input name="email"
-			   autocomplete="email"
-			   autofocus
-			   class="shopmagic-exit-intent__input"
-			   id="sm-exit-email"
-			   type="email"
-			   placeholder="<?php esc_html_e( 'Enter your email', 'shopmagic-abandoned-carts' ); ?>">
+				autocomplete="email"
+				autofocus
+				class="shopmagic-exit-intent__input"
+				id="sm-exit-email"
+				type="email"
+				placeholder="<?php esc_html_e( 'Enter your email', 'shopmagic-abandoned-carts' ); ?>">
 		<button class="shopmagic-exit-intent__submit"><?php esc_html_e( 'Save', 'shopmagic-abandoned-carts' ); ?></button>
 	</form>
 </dialog>

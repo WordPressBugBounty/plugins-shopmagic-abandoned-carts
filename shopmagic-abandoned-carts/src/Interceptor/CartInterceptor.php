@@ -123,8 +123,8 @@ final class CartInterceptor implements Hookable, Conditional {
 				[
 					'cid'     => $cart->get_id(),
 					'type'    => $cart->get_customer()->is_guest() ? 'guest' : 'user',
-					'email'    => $cart->get_customer()->get_email(),
-					'ua'    => self::get_user_agent(),
+					'email'   => $cart->get_customer()->get_email(),
+					'ua'      => self::get_user_agent(),
 					'success' => $saved,
 				]
 			);
@@ -457,6 +457,6 @@ final class CartInterceptor implements Hookable, Conditional {
 	}
 
 	private static function get_user_agent(): string {
-		return sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) ?: 'unknown';
+		return isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : 'unknown';
 	}
 }

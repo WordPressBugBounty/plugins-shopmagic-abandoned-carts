@@ -39,7 +39,7 @@ final class CartRestore implements Hookable, LoggerAwareInterface {
 	}
 
 	private static function calculate_hash( string $token ): string {
-		return md5( $token . AUTH_SALT );
+		return md5( $token . \AUTH_SALT );
 	}
 
 	public function cart_restore_callback(): void {

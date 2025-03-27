@@ -4,9 +4,9 @@ Tags: cart abandonment, cart recovery, abandoned carts, abandoned cart, abandone
 Author URL: https://shopmagic.app/products/shopmagic-abandoned-carts/?utm_source=wporg&utm_medium=readme&utm_campaign=shopmagic-abandoned-carts&utm_term=author-url&utm_content=add-on-abandoned-carts
 Donate link: https://shopmagic.app/
 Requires at least: 6.2
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 2.2.25
+Stable tag: 2.2.26
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -216,6 +216,10 @@ Not at all! No coding skills are required. One of our goals is to simplify the c
 9. Free add-ons for ShopMagic - a free email marketing plugin for WooCommerce.
 
 == Changelog ==
+
+= 2.2.26 - 2025-03-27 =
+* Added support for WordPress 6.8
+* Added support for WooCommerce 9.8
 
 = 2.2.25 - 2025-01-09 =
 * Reduced false-positive abandoned carts, when customer actually makes a purchase.

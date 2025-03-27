@@ -4,7 +4,6 @@ namespace WPDesk\ShopMagicCart\Event;
 
 use ShopMagicVendor\WPDesk\Forms\Field\InputNumberField;
 use WPDesk\ShopMagic\Customer\Customer;
-use WPDesk\ShopMagic\Extensions\Elements\Groups;
 use WPDesk\ShopMagic\Workflow\Automation\Automation;
 use WPDesk\ShopMagic\Workflow\Event\CustomerAwareInterface;
 use WPDesk\ShopMagic\Workflow\Event\CustomerAwareTrait;
@@ -39,10 +38,14 @@ final class AbandonedCartEvent extends Event implements SupportsDeferredCheck, C
 		return [
 			( new InputNumberField() )
 				->set_name( self::FIELD_NAME_PAUSE_PERIOD )
-				->set_attribute( 'min', 1 )
+				->set_attribute( 'min', '1' )
 				->set_label( __( 'Pause period for customer (days)', 'shopmagic-abandoned-carts' ) )
-				->set_description( __( 'Can be used to ensure that this event will trigger only once in a specified time period.',
-					'shopmagic-abandoned-carts' ) ),
+				->set_description(
+					__(
+						'Can be used to ensure that this event will trigger only once in a specified time period.',
+						'shopmagic-abandoned-carts'
+					)
+				),
 		];
 	}
 
@@ -66,7 +69,7 @@ final class AbandonedCartEvent extends Event implements SupportsDeferredCheck, C
 	}
 
 	public function get_group_slug(): string {
-		return Groups::CART;
+		return 'cart';
 	}
 
 	public function jsonSerialize(): array {

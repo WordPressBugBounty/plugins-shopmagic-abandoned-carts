@@ -11,7 +11,7 @@ final class CartDateCreated extends CartBasedFilter {
 	}
 
 	public function get_description(): string {
-		return esc_html__('Run automation if date of registering customer cart matches the rule.', 'shopmagic-abandoned-carts');
+		return esc_html__( 'Run automation if date of registering customer cart matches the rule.', 'shopmagic-abandoned-carts' );
 	}
 
 	public function passed(): bool {

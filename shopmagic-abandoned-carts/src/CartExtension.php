@@ -41,6 +41,4 @@ class CartExtension extends \WPDesk\ShopMagic\Extensions\AbstractExtension {
 			new Placeholder\CartLink(),
 		];
 	}
-
-
 }

@@ -34,7 +34,7 @@ class CartHydrator implements ObjectHydrator, ObjectDehydrator {
 	 * @return object[]
 	 */
 	public function normalize( object $object ): array {
-		$user_id = null;
+		$user_id  = null;
 		$guest_id = null;
 		if ( $object->get_customer()->is_guest() ) {
 			$guest_id = CustomerFactory::convert_customer_guest_id_to_number( $object->get_customer()->get_id() );

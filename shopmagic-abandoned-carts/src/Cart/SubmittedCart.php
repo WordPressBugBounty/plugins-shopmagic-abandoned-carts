@@ -58,5 +58,4 @@ class SubmittedCart extends BaseCart {
 			$this->changed = true;
 		}
 	}
-
 }

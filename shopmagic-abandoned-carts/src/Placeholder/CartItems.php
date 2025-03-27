@@ -24,8 +24,8 @@ final class CartItems extends CartBasedPlaceholder {
 
 	public function get_description(): string {
 		return __( 'Displays the products from cart.', 'shopmagic-abandoned-carts' ) .
-		       '<br>' .
-		       $this->utm_builder->get_description();
+				'<br>' .
+				$this->utm_builder->get_description();
 	}
 
 	public function get_supported_parameters( $values = null ): array {

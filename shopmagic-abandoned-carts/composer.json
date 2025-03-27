@@ -44,10 +44,8 @@
 	},
 	"require-dev": {
 		"10up/wp_mock": "^1",
-		"phpstan/extension-installer": "^1",
-		"phpstan/phpstan": "^1",
 		"phpunit/phpunit": "^9",
-		"szepeviktor/phpstan-wordpress": "^1",
+		"wpdesk/phpstan-rules": "^1.2",
 		"wpdesk/wp-basic-requirements": "^3.2.3",
 		"wpdesk/wp-builder": "^2",
 		"wpdesk/wp-codeception": "^2.11",

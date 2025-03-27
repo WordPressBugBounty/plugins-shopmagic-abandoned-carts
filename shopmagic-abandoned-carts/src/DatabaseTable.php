@@ -10,5 +10,4 @@ class DatabaseTable {
 
 		return "{$wpdb->prefix}shopmagic_cart";
 	}
-
 }

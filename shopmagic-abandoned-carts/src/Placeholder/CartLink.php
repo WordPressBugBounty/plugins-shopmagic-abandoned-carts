@@ -29,7 +29,9 @@ final class CartLink extends CartBasedPlaceholder {
 	}
 
 	public function value( array $parameters ): string {
-		return $this->utm_builder->append_utm_parameters_to_uri( $parameters,
-			CartRestore::get_restore_url( $this->get_cart()->get_token() ) );
+		return $this->utm_builder->append_utm_parameters_to_uri(
+			$parameters,
+			CartRestore::get_restore_url( $this->get_cart()->get_token() )
+		);
 	}
 }

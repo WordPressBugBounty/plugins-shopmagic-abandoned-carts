@@ -16,13 +16,16 @@ class Statistics implements \WPDesk\ShopMagic\Helper\Hookable {
 	}
 
 	public function hooks(): void {
-		add_filter( 'shopmagic/core/statistics/top_stats', function ( array $stats ): array {
-			return $this->add_cart_stats( $stats );
-		} );
+		add_filter(
+			'shopmagic/core/statistics/top_stats',
+			function ( array $stats ): array {
+				return $this->add_cart_stats( $stats );
+			}
+		);
 	}
 
 	private function add_cart_stats( array $stats ): array {
-		$stats[1]['value'] = $this->repository->get_count(['status' => 'active']);
+		$stats[1]['value'] = $this->repository->get_count( [ 'status' => 'active' ] );
 
 		return $stats;
 	}

@@ -12,7 +12,7 @@ final class CartItemCount extends CartBasedFilter {
 	}
 
 	public function get_description(): string {
-		return esc_html__('Run automation if amount of products in cart matches the rule.', 'shopmagic-abandoned-carts');
+		return esc_html__( 'Run automation if amount of products in cart matches the rule.', 'shopmagic-abandoned-carts' );
 	}
 
 	public function passed(): bool {

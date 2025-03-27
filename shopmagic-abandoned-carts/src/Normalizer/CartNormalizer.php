@@ -23,14 +23,19 @@ class CartNormalizer implements Normalizer {
 				'email' => $object->get_customer()->get_email(),
 			],
 			'updated'  => $object->get_last_modified()->format( \DateTimeInterface::ATOM ),
-			'products' => array_values( array_map( static function ( CartProductItem $item ) {
-				return [
-					'id'       => $item->get_product_id(),
-					'name'     => $item->get_name(),
-					'quantity' => $item->get_quantity(),
-					'image'    => $item->get_image_src(),
-				];
-			}, $object->get_items() ) ),
+			'products' => array_values(
+				array_map(
+					static function ( CartProductItem $item ) {
+						return [
+							'id'       => $item->get_product_id(),
+							'name'     => $item->get_name(),
+							'quantity' => $item->get_quantity(),
+							'image'    => $item->get_image_src(),
+						];
+					},
+					$object->get_items()
+				)
+			),
 			'value'    => [
 				'price'    => $object->get_total(),
 				'currency' => $object->get_currency(),
@@ -45,5 +50,4 @@ class CartNormalizer implements Normalizer {
 	public function supports_normalization( object $object ): bool {
 		return $object instanceof BaseCart;
 	}
-
 }
