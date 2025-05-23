@@ -348,9 +348,9 @@ final class CartInterceptor implements Hookable, Conditional {
 			[ 'oid' => $order->get_id() ]
 		);
 
-		if ( ! $cart instanceof SubmittedCart && ! $cart instanceof AbandonedCart ) {
+		if ( ! $cart instanceof SubmittedCart && ! $cart instanceof AbandonedCart && ! $cart instanceof ActiveCart ) {
 			$this->logger->error(
-				'Invalid cart type for order association. Expected status "submitted" or "abandoned".',
+				'Invalid cart type for order association. Expected status "active", "submitted" or "abandoned".',
 				[
 					'cid'         => $cart_id,
 					'oid'         => $order->get_id(),

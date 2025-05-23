@@ -6,7 +6,7 @@ Donate link: https://shopmagic.app/
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 2.2.26
+Stable tag: 2.2.27
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -113,7 +113,7 @@ However, there’s a non-direct way of extending ShopMagic’s abandoned cart fe
 
 Try the plugin (free & PRO) in your free demo and check out the documentation.
 
-- [Live demo](https://wpde.sk/fw-demo-repo)
+- [Live demo](https://wpdesk.link/fw-demo-repo)
 - [Documentation](https://docs.shopmagic.app/)
 
 == FAQ ==
@@ -180,6 +180,10 @@ You can also choose one from the list below based on your needs.
 4. Use settings to set your abandoned cart email templates in WooCommerce.
 5. Analyse the recovery rate with abandoned cart reports for WooCommerce.
 
+== Data use policy ==
+
+Learn about [Use of Data Policy by WP Desk Plugins](https://shopmagic.app/use-of-data-collected-by-wp-desk-plugins/?utm_source=wporg&utm_medium=link&utm_campaign=data-use-policy)
+
 == Frequently Asked Questions ==
 
 = Do I need anything else to use this plugin? =
@@ -216,6 +220,9 @@ Not at all! No coding skills are required. One of our goals is to simplify the c
 9. Free add-ons for ShopMagic - a free email marketing plugin for WooCommerce.
 
 == Changelog ==
+
+= 2.2.27 - 2025-05-23 =
+* Change internal links
 
 = 2.2.26 - 2025-03-27 =
 * Added support for WordPress 6.8

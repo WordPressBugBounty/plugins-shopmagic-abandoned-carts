@@ -29,9 +29,10 @@ class OrderedCart extends BaseCart {
 			$status !== Cart::ABANDONED &&
 			$status !== Cart::SUBMITTED &&
 			$status !== Cart::RECOVERED &&
-			$status !== Cart::ORDERED
+			$status !== Cart::ORDERED &&
+			$status !== Cart::ACTIVE
 		) {
-			throw new \InvalidArgumentException( sprintf( 'Allowed statuses are: "ordered", "submitted", "abandoned", "recovered"; "%s" given.', $status ) );
+			throw new \InvalidArgumentException( sprintf( 'Allowed statuses are: "active", "ordered", "submitted", "abandoned", "recovered"; "%s" given.', $status ) );
 		}
 
 		parent::__construct(
