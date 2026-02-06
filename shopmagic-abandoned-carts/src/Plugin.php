@@ -35,8 +35,8 @@ final class Plugin extends AbstractPlugin implements HookableCollection {
 
 		$this->plugin_url       = $this->plugin_info->get_plugin_url();
 		$this->plugin_namespace = $this->plugin_info->get_text_domain();
-		$this->docs_url         = 'https://docs.shopmagic.app/?utm_source=user-site&utm_medium=quick-link&utm_campaign=docs';
-		$this->support_url      = 'https://shopmagic.app/support/?utm_source=user-site&utm_medium=quick-link&utm_campaign=support';
+		$this->docs_url         = 'https://shopmagic.app/sk/shopmagic-abandoned-carts-docs/';
+		$this->support_url      = 'https://shopmagic.app/sk/shopmagic-abandoned-carts-support';
 	}
 
 	public function hooks(): void {

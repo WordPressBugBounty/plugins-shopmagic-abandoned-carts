@@ -24,7 +24,7 @@ final class CartFactory {
 	/** @var CustomerRepository */
 	private $customer_repository;
 
-	public function __construct( CustomerRepository $customer_repository, LoggerInterface $logger = null ) {
+	public function __construct( CustomerRepository $customer_repository, ?LoggerInterface $logger = null ) {
 		$this->customer_repository = $customer_repository;
 		$this->logger              = $logger ?? new NullLogger();
 	}

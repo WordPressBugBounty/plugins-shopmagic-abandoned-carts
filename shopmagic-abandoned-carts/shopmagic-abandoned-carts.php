@@ -1,17 +1,17 @@
 <?php
 /**
  * Plugin Name: ShopMagic Abandoned Carts
- * Plugin URI: https://shopmagic.app/products/shopmagic-abandoned-carts/?utm_source=add_plugin_details&utm_medium=link&utm_campaign=plugin_homepage
+ * Plugin URI: https://shopmagic.app/sk/shopmagic-abandoned-carts-plugin
  * Description: Allows saving customer details on a partial WooCommerce purchase and send abandoned cart emails.
- * Version: 2.2.27
+ * Version: 2.2.34
  * Author: WP Desk
- * Author URI: https://shopmagic.app/?utm_source=user-site&utm_medium=quick-link&utm_campaign=author
+ * Author URI: https://shopmagic.app/sk/shopmagic-abandoned-carts-author/
  * Text Domain: shopmagic-abandoned-carts
  * Domain Path: /lang/
  * Requires at least: 5.0
- * Tested up to: 6.8
- * WC requires at least: 9.4
- * WC tested up to: 9.8
+ * Tested up to: 6.9
+ * WC requires at least: 10.1
+ * WC tested up to: 10.5
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce,shopmagic-for-woocommerce
  *
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly
 
 /* THESE TWO VARIABLES CAN BE CHANGED AUTOMATICALLY */
-$plugin_version = '2.2.27';
+$plugin_version = '2.2.34';
 
 $plugin_name        = 'ShopMagic Abandoned Carts';
 $plugin_class_name  = '\WPDesk\ShopMagicCart\Plugin';

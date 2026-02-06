@@ -7,7 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInitbd33863e74e5a328c036821d1541a6a9
 {
     public static $prefixLengthsPsr4 = array (
-        'W' => 
+        'W' =>
         array (
             'WPDesk\\ShopMagicCart\\migrations\\' => 32,
             'WPDesk\\ShopMagicCart\\' => 21,
@@ -15,11 +15,11 @@ class ComposerStaticInitbd33863e74e5a328c036821d1541a6a9
     );
 
     public static $prefixDirsPsr4 = array (
-        'WPDesk\\ShopMagicCart\\migrations\\' => 
+        'WPDesk\\ShopMagicCart\\migrations\\' =>
         array (
             0 => __DIR__ . '/../..' . '/migrations',
         ),
-        'WPDesk\\ShopMagicCart\\' => 
+        'WPDesk\\ShopMagicCart\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

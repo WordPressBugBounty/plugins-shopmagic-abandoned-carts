@@ -333,7 +333,7 @@ final class CartInterceptor implements Hookable, Conditional {
 		try {
 			$cart = $cart_finder();
 		} catch ( CannotProvideItemException $e ) {
-			$this->logger->error(
+			$this->logger->warning(
 				'Failed to associate any cart with order "{oid}"!',
 				[
 					'oid'       => $order->get_id(),
@@ -349,7 +349,7 @@ final class CartInterceptor implements Hookable, Conditional {
 		);
 
 		if ( ! $cart instanceof SubmittedCart && ! $cart instanceof AbandonedCart && ! $cart instanceof ActiveCart ) {
-			$this->logger->error(
+			$this->logger->warning(
 				'Invalid cart type for order association. Expected status "active", "submitted" or "abandoned".',
 				[
 					'cid'         => $cart_id,
