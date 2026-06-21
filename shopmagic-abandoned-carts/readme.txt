@@ -5,7 +5,7 @@ Donate link: https://shopmagic.app/sk/shopmagic-abandoned-carts-donate/
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.2.38
+Stable tag: 2.2.39
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,9 @@ When reporting an issue, please include your WordPress version, WooCommerce vers
 
 
 == Changelog ==
+
+= 2.2.39 - 2026-06-21 =
+* Added support for WooCommerce 10.9
 
 = 2.2.38 - 2026-05-19 =
 * Added support for WordPress 7.0
