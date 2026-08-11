@@ -1,11 +1,11 @@
 === ShopMagic Abandoned Cart Recovery for WooCommerce ===
-Tags: cart abandonment, cart recovery, abandoned carts, abandoned cart, abandoned cart email
+Tags: email marketing, marketing automation, carts, email personalization, carts woocommerce
 Author URL: https://shopmagic.app/sk/shopmagic-abandoned-carts-readme-author/
 Donate link: https://shopmagic.app/sk/shopmagic-abandoned-carts-donate/
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.2.39
+Stable tag: 2.2.40
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,9 @@ When reporting an issue, please include your WordPress version, WooCommerce vers
 
 
 == Changelog ==
+
+= 2.2.40 - 2026-08-11 =
+* Added support for WooCommerce 11.0
 
 = 2.2.39 - 2026-06-21 =
 * Added support for WooCommerce 10.9

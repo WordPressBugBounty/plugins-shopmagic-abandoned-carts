@@ -1,5 +1,6 @@
 {
 	"name": "wpdesk/shopmagic-abandoned-carts",
+	"type": "wordpress-plugin",
 	"authors": [
 		{
 			"name": "Krzysiek",
@@ -13,12 +14,6 @@
 		},
 		"classmap": [
 			"vendor_prefixed"
-		]
-	},
-	"autoload-dev": {
-		"classmap": [
-			"tests/unit",
-			"tests/integration"
 		]
 	},
 	"config": {
@@ -48,7 +43,7 @@
 		"wpdesk/phpstan-rules": "^1.2",
 		"wpdesk/wp-basic-requirements": "^3.2.3",
 		"wpdesk/wp-builder": "^2",
-		"wpdesk/wp-codeception": "^2.11",
+		"wpdesk/wp-codeception": "^3",
 		"wpdesk/wp-notice": "^3.1.3",
 		"wpdesk/wp-plugin-flow-free": "^1.0",
 		"wpdesk/wp-wpdesk-composer": "^3"
@@ -79,6 +74,5 @@
 			"url": "https://gitlab.wpdesk.dev/api/v4/group/wpdesk/-/packages/composer/"
 		}
 	},
-	"version": "2.2.39",
-	"type": "wordpress-plugin"
+	"version": "2.2.40"
 }

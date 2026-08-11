@@ -40,9 +40,9 @@ final class CartItemCategories extends CartBasedFilter {
 	private function get_categories(): array {
 		$list = [];
 
-		$categories = get_terms( // phpcs:ignore WordPress.WP.DeprecatedParameters.Get_termsParam2Found
-			'product_cat',
+		$categories = get_terms(
 			[
+				'taxonomy'   => 'product_cat',
 				'orderby'    => 'name',
 				'hide_empty' => false,
 			]
