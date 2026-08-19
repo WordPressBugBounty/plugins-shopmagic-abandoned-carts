@@ -2,18 +2,22 @@
 
 namespace ShopMagicCartVendor;
 
-/** @var string $username */
-/** @var string $allow_url */
-/** @var string $skip_url */
-/** @var string $terms_url */
+/**
+ * @var string $logo_url
+ * @var string $username
+ * @var string $allow_url
+ * @var string $skip_url
+ * @var string $terms_url
+ * @var string $shop_name
+ */
 if (!\defined('ABSPATH')) {
     exit;
 }
-?>
-<div id="wpdesk_tracker_connect" class="plugin-card">
+?><div id="wpdesk_tracker_connect" class="plugin-card">
 	<div class="message plugin-card-top">
-		<span class="wpdesk-logo"></span>
-
+		<span><img class="logo" src="<?php 
+echo \esc_attr($logo_url);
+?>" /></span>
 		<p>
 			<?php 
 \printf(\esc_html__('Hey %s,', 'shopmagic-abandoned-carts'), \esc_html($username));
@@ -63,7 +67,7 @@ echo \esc_url($skip_url);
 \esc_html_e('Plugin Usage', 'shopmagic-abandoned-carts');
 ?></span>
 						<p><?php 
-\esc_html_e('Current settings and usage information of WP Desk plugins', 'shopmagic-abandoned-carts');
+\printf(\esc_html__('Current settings and usage information of %1$s plugins', 'shopmagic-abandoned-carts'), \esc_html($shop_name));
 ?></p>
 					</div>
 				</li>
@@ -82,7 +86,7 @@ echo \esc_url($skip_url);
 
 			<div class="terms">
 				<a href="<?php 
-echo \esc_url($terms_url);
+echo \esc_url_raw($terms_url);
 ?>" target="_blank"><?php 
 \esc_html_e('Find out more &raquo;', 'shopmagic-abandoned-carts');
 ?></a>

@@ -23,8 +23,7 @@ if (!\class_exists('ShopMagicCartVendor\WPDesk_Tracker_Factory_Prefixed')) {
      */
     class WPDesk_Tracker_Factory_Prefixed
     {
-        /** @var LoggerInterface|null */
-        private $logger;
+        private ?LoggerInterface $logger;
         public function __construct(?LoggerInterface $logger = null)
         {
             $this->logger = $logger;
@@ -37,7 +36,7 @@ if (!\class_exists('ShopMagicCartVendor\WPDesk_Tracker_Factory_Prefixed')) {
          *
          * @return WPDesk_Tracker built tracker.
          */
-        private function build_tracker($basename, $tracker_bucket = null)
+        private function build_tracker($basename, $tracker_bucket = null, $initialize_hooks = \true)
         {
             $sender = new WPDesk_Tracker_Sender_Logged(new WPDesk_Tracker_Sender_Resolver($basename), $this->logger);
             $tracker = new WPDesk_Tracker($basename, $sender, $tracker_bucket);
@@ -62,7 +61,9 @@ if (!\class_exists('ShopMagicCartVendor\WPDesk_Tracker_Factory_Prefixed')) {
             $tracker->add_data_provider(new WPDesk_Tracker_Data_Provider_User_Agent());
             $tracker->add_data_provider(new WPDesk_Tracker_Data_Provider_Users());
             $tracker->add_data_provider(new WPDesk_Tracker_Data_Provider_Wordpress());
-            $tracker->init_hooks();
+            if ($initialize_hooks) {
+                $tracker->init_hooks();
+            }
             return $tracker;
         }
         /**
@@ -73,9 +74,9 @@ if (!\class_exists('ShopMagicCartVendor\WPDesk_Tracker_Factory_Prefixed')) {
          *
          * @return WPDesk_Tracker created tracker.
          */
-        public function create_tracker($basename, $tracker_bucket = null)
+        public function create_tracker($basename, $tracker_bucket = null, $initialize_hooks = \true)
         {
-            $tracker = $this->build_tracker($basename, $tracker_bucket);
+            $tracker = $this->build_tracker($basename, $tracker_bucket, $initialize_hooks);
             \do_action('wpdesk_tracker_initialized', $this);
             return $tracker;
         }

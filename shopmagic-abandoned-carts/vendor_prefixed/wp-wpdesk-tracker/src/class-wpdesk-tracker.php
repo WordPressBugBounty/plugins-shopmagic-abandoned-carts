@@ -103,8 +103,17 @@ if (!\class_exists('ShopMagicCartVendor\WPDesk_Tracker')) {
             \add_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10, 3);
             \add_filter('option_wpdesk_helper_options', [$this, 'option_wpdesk_helper_options'], 10, 2);
             \add_filter('default_option_wpdesk_helper_options', [$this, 'default_option_wpdesk_helper_options'], 10, 3);
-            \add_filter('wpdesk_tracker_data', [$this, 'wpdesk_tracker_message_version']);
+            $this->init_payload_hooks();
             \add_action('admin_bar_menu', [$this, 'admin_bar_menu'], 999);
+        }
+        /**
+         * Registers hooks required to format the tracking payload.
+         *
+         * @return void
+         */
+        public function init_payload_hooks()
+        {
+            \add_filter('wpdesk_tracker_data', [$this, 'wpdesk_tracker_message_version']);
         }
         public function add_data_provider(\WPDesk_Tracker_Data_Provider $provider)
         {
@@ -121,6 +130,15 @@ if (!\class_exists('ShopMagicCartVendor\WPDesk_Tracker')) {
             }
         }
         public function init_schedule()
+        {
+            self::schedule();
+        }
+        /**
+         * Register or remove the global tracker schedule based on consent.
+         *
+         * @return void
+         */
+        public static function schedule()
         {
             $options = \get_option('wpdesk_helper_options');
             if (!\is_array($options)) {
@@ -357,7 +375,7 @@ if (!\class_exists('ShopMagicCartVendor\WPDesk_Tracker')) {
                         $options = [];
                     }
                     if ($_GET['allow'] == '0') {
-                        \remove_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10, 3);
+                        \remove_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10);
                         unset($options['wpdesk_tracker_agree']);
                         \update_option('wpdesk_helper_options', $options);
                         \add_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10, 3);
@@ -365,7 +383,7 @@ if (!\class_exists('ShopMagicCartVendor\WPDesk_Tracker')) {
                         \update_option('wpdesk_helper_options', $options);
                         \update_option('wpdesk_tracker_notice', '1');
                     } else {
-                        \remove_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10, 3);
+                        \remove_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10);
                         unset($options['wpdesk_tracker_agree']);
                         \update_option('wpdesk_helper_options', $options);
                         \add_action('update_option_wpdesk_helper_options', [$this, 'update_option_wpdesk_helper_options'], 10, 3);
@@ -441,7 +459,7 @@ if (!\class_exists('ShopMagicCartVendor\WPDesk_Tracker')) {
                         $option_name = 'activation_plugin_' . $plugin;
                         $activation_date = \get_option($option_name, '');
                         if ($activation_date != '') {
-                            $params['active_plugins'][$plugin]['activation_date'] = $activation_date;
+                            $params['active_plugins'][$plugin]['activation_date'] = \get_gmt_from_date($activation_date, 'Y-m-d\TH:i:s\Z');
                         }
                     }
                 }
